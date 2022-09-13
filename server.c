@@ -27,14 +27,25 @@ int main(int argc, char *argv[])
 	bind(serverfd, (struct sockaddr*)&server_sock, sizeof(server_sock));
 	listen(serverfd, 10);
 	connfd = accept(serverfd, NULL, NULL);
-	if (connfd ==  -1)
+	if (connfd < 0)
 	{
 		printf("ERROR:connection not established");
 		return (0);
 	}
+	else
+	{
+		printf("connection with a client established");
+	}
 	while (1)
 	{
 		read(connfd, msg, sizeof(msg));
+		if (msg[0] == 0x24)
+		{
+			printf("connection closed by client");
+			close(connfd);
+			close(serverfd);
+			return (0);
+		}
 		write(1, msg, sizeof(msg));
 	}
 	return (0);

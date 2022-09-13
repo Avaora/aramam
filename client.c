@@ -15,7 +15,9 @@ int main(int argc, char *argv[])
 
 	client_sock.sin_family = AF_INET;
 	client_sock.sin_port = htons(4096);
-	client_sock.sin_addr.s_addr = inet_addr("127.0.0.1");
+	client_sock.sin_addr.s_addr = inet_addr("192.168.1.38");
+
+	memset(msg, 0, sizeof(msg));
 
 	clientfd = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -31,6 +33,7 @@ int main(int argc, char *argv[])
 			fgets(msg, sizeof(msg), stdin);
 			if (msg[0] == 0x24)
 			{
+				write(clientfd, msg, 1);
 				close(clientfd);
 				return (0);
 			}
