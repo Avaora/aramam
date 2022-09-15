@@ -41,17 +41,18 @@ int main(int argc, char *argv[])
 					fgets(tx_buf, sizeof(tx_buf), stdin);
 					if (tx_buf[0] == 0x24)
 					{
-						write(clientfd, tx_buf, strlen(tx_buf));
+						write(clientfd, tx_buf, strlen(tx_buf) + 1);
 						printf("Connection ended\n");
 						break ;
 					}
-					write(clientfd, tx_buf, strlen(tx_buf));
+					write(clientfd, tx_buf, strlen(tx_buf) + 1);
 					read(clientfd, rx_buf, sizeof(rx_buf));
 					if (rx_buf[0] == 0x24)
 					{
 						printf("Connection ended by server\n");
 						break ;
 					}
+					write(1, rx_buf, strlen(rx_buf));
 				}
 				close(clientfd);
 				return (0);
@@ -86,14 +87,15 @@ int main(int argc, char *argv[])
 								printf("Connection ended by client\n");
 								break ;
 							}
+							write(1, rx_buf, strlen(rx_buf));
 							fgets(tx_buf, sizeof(tx_buf), stdin);
 							if (tx_buf[0] == 0x24)
 							{
 								printf("Connection ended");
-								write(serverfd, tx_buf, strlen(tx_buf));
+								write(serverfd, tx_buf, strlen(tx_buf) + 1);
 								break;
 							}
-							write(serverfd, tx_buf, strlen(tx_buf));
+							write(serverfd, tx_buf, strlen(tx_buf) + 1);
 						}
 						close(serverfd);
 						close(listenfd);
