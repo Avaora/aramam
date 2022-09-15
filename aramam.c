@@ -17,15 +17,11 @@ int main(int argc, char *argv[])
 	struct	sockaddr_in client_sock;
 	struct	sockaddr_in server_sock;
 
-	if (argc == 2)
+	if (((*argv[1] == 'c') || (*argv[1] == 'C')) && argc == 3)
 	{
 		client_sock.sin_family = AF_INET;
 		client_sock.sin_port = htons(4096);
-		client_sock.sin_addr.s_addr = inet_addr(argv[1]);
-
-		server_sock.sin_family = AF_INET;
-		server_sock.sin_port = htons(4096);
-		server_sock.sin_addr.s_addr = INADDR_ANY;
+		client_sock.sin_addr.s_addr = inet_addr(argv[2]);
 
 		clientfd = socket(AF_INET, SOCK_STREAM, 0);
 		if (clientfd >= 0)
@@ -63,6 +59,13 @@ int main(int argc, char *argv[])
 		}
 		else
 			printf("Unable to create client socket\n");
+		printf("Exiting...\n");
+	}
+	else if ((*argv[1] == 's') || (*argv[1] == 'S'))
+	{
+		server_sock.sin_family = AF_INET;
+		server_sock.sin_port = htons(4096);
+		server_sock.sin_addr.s_addr = INADDR_ANY;
 
 		listenfd = socket(AF_INET, SOCK_STREAM, 0);
 		if (listenfd >= 0)
@@ -91,7 +94,7 @@ int main(int argc, char *argv[])
 							fgets(tx_buf, sizeof(tx_buf), stdin);
 							if (tx_buf[0] == 0x24)
 							{
-								printf("Connection ended");
+								printf("Connection ended\n");
 								write(serverfd, tx_buf, strlen(tx_buf) + 1);
 								break;
 							}
@@ -111,6 +114,9 @@ int main(int argc, char *argv[])
 		}
 		else
 			printf("Unable to create listen socket\n");
+		printf("Exiting...\n");
 	}
+	else
+		printf("Invalid option\n");
 	return (0);
 }
