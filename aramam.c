@@ -42,14 +42,14 @@ int main(int argc, char *argv[])
 					if (tx_buf[0] == 0x24)
 					{
 						write(clientfd, tx_buf, strlen(tx_buf));
-						printf("Connection ended");
+						printf("Connection ended\n");
 						break ;
 					}
 					write(clientfd, tx_buf, strlen(tx_buf));
 					read(clientfd, rx_buf, sizeof(rx_buf));
 					if (rx_buf[0] == 0x24)
 					{
-						printf("Connection ended by server");
+						printf("Connection ended by server\n");
 						break ;
 					}
 				}
@@ -57,16 +57,16 @@ int main(int argc, char *argv[])
 				return (0);
 			}
 			else
-				printf("Couldn`t connected to server");
+				printf("Couldn`t connected to server\n");
 			close(clientfd);
 		}
 		else
-			printf("Unable to create client socket");
+			printf("Unable to create client socket\n");
 
 		listenfd = socket(AF_INET, SOCK_STREAM, 0);
 		if (listenfd >= 0)
 		{
-			printf("Listen socket created successfully");
+			printf("Listen socket created successfully\n");
 			if (bind(listenfd, (struct sockaddr*)&server_sock, sizeof(server_sock)) == 0)
 			{
 				printf("Listen socket successfully bind to a network interface\n");
@@ -80,18 +80,18 @@ int main(int argc, char *argv[])
 						printf("You are server now\n");
 						while (1)
 						{
+							read(serverfd, rx_buf, sizeof(rx_buf));
+							if (rx_buf[0] == 0x24)
+							{
+								printf("Connection ended by client\n");
+								break ;
+							}
 							fgets(tx_buf, sizeof(tx_buf), stdin);
 							if (tx_buf[0] == 0x24)
 							{
 								printf("Connection ended");
 								write(serverfd, tx_buf, strlen(tx_buf));
-								break ;
-							}
-							read(serverfd, rx_buf, sizeof(rx_buf));
-							if (rx_buf[0] == 0x24)
-							{
-								printf("Connection ended by client");
-								break ;
+								break;
 							}
 							write(serverfd, tx_buf, strlen(tx_buf));
 						}
@@ -100,15 +100,15 @@ int main(int argc, char *argv[])
 						return (0);
 					}
 					else
-						printf("Unable to accept remote connection");
+						printf("Unable to accept remote connection\n");
 				}
 			}
 			else
-				printf("Unable to bind listen socket");
+				printf("Unable to bind listen socket\n");
 			close(listenfd);
 		}
 		else
-			printf("Unable to create listen socket");
+			printf("Unable to create listen socket\n");
 	}
 	return (0);
 }
